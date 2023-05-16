@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>테스트 페이지</title>
+  </head>
+  <body>
+    <h1>로그인</h1>
+    <form action="/login" method="POST">
+      <label for="email">이메일:</label>
+      <input type="email" id="email" name="email" required><br>
+      <label for="password">비밀번호:</label>
+      <input type="password" id="password" name="password" required><br>
+      <input type="submit" value="로그인">
+    </form>
+    <hr>
+    <h1>마이페이지</h1>
+    <div id="mypage"></div>
+    <script>
+      const token = localStorage.getItem('token');
+      if (token) {
+        fetch('/mypage', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        })
+          .then(res => res.text())
+          .then(data => {
+            document.querySelector('#mypage').innerHTML = data;
+          })
+          .catch(err => {
+            console.error('마이페이지 오류:', err);
+            alert('마이페이지 로드 실패');
+          });
+      } else {
+        alert('로그인이 필요합니다');
+        window.location.href = '/login.html';
+      }
+    </script>
+  </body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API 테스트</title>
+</head>
+<body>
+    <h1>API 테스트</h1>
+
+    <button onclick="registerDeveloper()">개발자 등록</button>
+    <button onclick="updateDeveloper()">개발자 수정</button>
+    <button onclick="deleteDeveloper()">개발자 삭제</button>
+    <button onclick="getDeveloper()">개발자 조회</button>
+
+    <script>
+        // 개발자 등록
+        function registerDeveloper() {
+            fetch('/admin/developers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: 'John Doe',
+                    position: 'Backend Developer',
+                    skillSet: ['Node.js', 'Express'],
+                    level: 'Intermediate'
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
+        }
+
+        // 개발자 수정
+        function updateDeveloper() {
+            fetch('/admin/developers', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: 'John Doe',
+                    position: 'Full Stack Developer',
+                    skillSet: ['Node.js', 'Express', 'React'],
+                    level: 'Advanced'
+                })
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
+        }
+
+        // 개발자 삭제
+        function deleteDeveloper() {
+            fetch('/admin/developers', {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
+        }
+
+        // 개발자 조회
+        function getDeveloper() {
+            fetch('/admin/developers')
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error));
+        }
+    </script>
+</body>
+</html>
